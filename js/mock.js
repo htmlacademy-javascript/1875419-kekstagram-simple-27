@@ -17,7 +17,7 @@ const createObject = (id) => ({
 
 const generateObjects = (number) => {
   const objects = [];
-  for (let i = 0; i < number; i++) {
+  for (let i = 1; i <= number; i++) {
     objects.push(createObject(i));
   }
   return objects;
