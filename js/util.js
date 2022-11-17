@@ -29,5 +29,6 @@ const getRandomPositiveInteger = (a, b) => {
 const checkStringLength = (string, length) =>
   string.length <= length;
 
+const isEscKey = (evt) => evt.key === 'Escape';
 
-export {getRandomPositiveInteger, checkStringLength};
+export {getRandomPositiveInteger, checkStringLength, isEscKey};
