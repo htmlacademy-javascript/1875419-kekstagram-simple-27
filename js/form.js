@@ -1,4 +1,6 @@
 import { isEscKey } from './util.js';
+import { resetScale } from './scale.js';
+import { resetEffect } from './effects.js';
 
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
 const form = document.querySelector('.img-upload__form');
@@ -18,33 +20,43 @@ const onKeyClosePhotoEditor = (evt) => {
     imgUploadOverlay.classList.add('hidden');
     document.body.classList.remove('modal-open');
     form.reset();
+    resetScale();
+    resetEffect();
   }
 };
-const closePhotoEditor = () => {
+const onClosePhotoEditorClick = () => {
   imgUploadOverlay.classList.toggle('hidden');
   document.body.classList.toggle('modal-open');
   form.reset();
-
+  resetScale();
+  resetEffect();
 };
 
-const onSubmitButton = (evt) => {
+const onSubmitButtonClick = (evt) => {
   const isValid = pristine.validate();
   if (!isValid) {
     evt.preventDefault();
   }
 };
 
+
 const showPhotoEditor = () => {
   imgUploadOverlay.classList.toggle('hidden');
   document.body.classList.toggle('modal-open');
-  document.body.addEventListener('keydown', onKeyClosePhotoEditor);
-  closeButton.addEventListener('click', ()=>{
-    closePhotoEditor();
-    document.removeEventListener(onKeyClosePhotoEditor);
-  });
-  submitButton.addEventListener('click', onSubmitButton);
 };
 
+const onUploadButton = () => {
+  showPhotoEditor();
+  document.body.addEventListener('keydown', onKeyClosePhotoEditor);
+};
 
-uploadElement.addEventListener('click', showPhotoEditor);
+uploadElement.addEventListener('input', onUploadButton);
+
+
+closeButton.addEventListener('click', ()=>{
+  onClosePhotoEditorClick();
+  document.removeEventListener('keydown', onKeyClosePhotoEditor);
+});
+
+submitButton.addEventListener('click', onSubmitButtonClick);
 
