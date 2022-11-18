@@ -1,18 +1,18 @@
 import { getRandomPositiveInteger} from './util.js';
 
 const OBJECTS_TO_GENERATE = 25;
-const LIKES_MIN = 15;
-const LIKES_MAX = 200;
-const COMMENTS_MIN = 0;
-const COMMENTS_MAX = 200;
+const MIN_LIKES = 15;
+const MAX_LIKES = 200;
+const MIN_COMMENTS = 0;
+const MAX_COMMENTS = 200;
 
 
 const createObject = (id) => ({
   id,
   url: `photos/${id}.jpg`,
   description: 'описание фото',
-  likes: getRandomPositiveInteger(LIKES_MIN, LIKES_MAX),
-  comments: getRandomPositiveInteger(COMMENTS_MIN, COMMENTS_MAX)
+  likes: getRandomPositiveInteger(MIN_LIKES, MAX_LIKES),
+  comments: getRandomPositiveInteger(MIN_COMMENTS, MAX_COMMENTS)
 });
 
 const generateObjects = (number) => {
