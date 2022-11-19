@@ -1,6 +1,8 @@
 import './util.js';
-import './mock.js';
 import './miniatures.js';
-import './form.js';
+import {setUserFormSubmit} from './form.js';
 import './scale.js';
 import './effects.js';
+import './api.js';
+
+setUserFormSubmit();
