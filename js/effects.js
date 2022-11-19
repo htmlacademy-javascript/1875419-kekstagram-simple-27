@@ -57,7 +57,6 @@ const EFFECTS = [
 
 const imgPreview = document.querySelector('.img-upload__preview img');
 const form = document.querySelector('.img-upload__form');
-//const effectElement = document.querySelector('.effects__list');
 const effectLevel = document.querySelector('.effect-level__value');
 const sliderElement = document.querySelector('.effect-level__slider');
 

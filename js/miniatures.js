@@ -1,6 +1,3 @@
-
-import { generateObjects, OBJECTS_TO_GENERATE } from './mock.js';
-
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const pictureListElement = document.querySelector('.pictures');
 const pictureListFragment = document.createDocumentFragment();
@@ -24,5 +21,4 @@ const renderMiniature = (pictures) => {
 };
 
 
-renderMiniature(generateObjects(OBJECTS_TO_GENERATE));
-
+export {renderMiniature};
