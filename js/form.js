@@ -1,6 +1,6 @@
 import { isEscKey } from './util.js';
 import { resetScale } from './scale.js';
-import { resetEffect } from './effects.js';
+import { resetEffect, onFormChange } from './effects.js';
 import { sendData } from './api.js';
 
 
@@ -9,8 +9,6 @@ const form = document.querySelector('.img-upload__form');
 const uploadElement = form.querySelector('#upload-file');
 const closeButton = form.querySelector('#upload-cancel');
 const submitButton = form.querySelector('.img-upload__submit');
-const errorPopup = document.querySelector('#error').content.querySelector('.error');
-const successPopup = document.querySelector('#success').content.querySelector('.success');
 
 
 const pristine = new Pristine(form, {
@@ -28,11 +26,16 @@ const unblockSubmitButton = () => {
   submitButton.disabled = false;
   submitButton.textContent = 'Опубликовать';
 };
-
+//сброс формы
 const resetForm = () => {
   form.reset();
   resetScale();
   resetEffect();
+};
+
+// Удаление обработчиков событий
+const removeEventListener = () => {
+  form.removeEventListener('change', onFormChange);
 };
 
 const showPhotoEditor = () => {
@@ -44,72 +47,107 @@ const closePhotoEditor = () => {
   imgUploadOverlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
   resetForm();
+  removeEventListener();
 };
 
 
-const onPhotoEditorKeydown = (evt) => {
+function onPhotoEditorKeydown (evt) {
+  const errorPopup = document.querySelector('.error');
+  if(errorPopup){
+    return;
+  }
   if (isEscKey(evt)) {
     closePhotoEditor();
   }
-};
+}
+
 const onPhotoEditorCloseClick = () => {
   closePhotoEditor();
 };
 
-const renderMessage = (text) => {
-  document.body.append(text);
+// Закрытие по клику на область вне модального окна
 
-  const onDocumentKeydown = (evt) => {
-    if (isEscKey(evt)) {
-      evt.preventDefault();
-      closeUserModal();
-    }
-  };
+const onBackdropClick = ({target})=> {
+  const isBtnClick = target.closest('.error__button') || target.closest('.success__button');
+  const popup = document.querySelector('.popup');
+  if (popup && (!target.closest('.error__inner') && !target.closest('.success__inner')
+  || isBtnClick)) {
 
-  const onPopupCloseClick = () => {
-    closeUserModal();
-  };
-  //тут декларативное объявление, так как она нужна выше
-  function closeUserModal() {
-    text.remove();
-    document.removeEventListener('keydown', onDocumentKeydown);
+    popup.remove();
   }
-  const onCloseAlertOutside = () => {
-    const blockInner = text.querySelector('div');
-    document.addEventListener('click', (e) => {
-      //метод .composedPath() возвращает путь события, представляющий собой массив объектов, на которых будут вызваны обработчики событий.
-      //с помощью метода массивов .includes возвращаем true для определения, что событие произошло на элементе div
-      const withinBoundaries = e.composedPath().includes(blockInner);
-      if (!withinBoundaries) {
-        text.remove();
-        document.removeEventListener('keydown', onDocumentKeydown);
-      }
-    }, {once: true});
+};
+
+
+const errorTemplate = document
+  .querySelector('#error')
+  .content.querySelector('.error');
+
+const errorContainer = document.createElement('div');
+errorContainer.classList.add('popup');
+
+const errorAlert = () => {
+  const error = errorTemplate.cloneNode(true);
+
+  errorContainer.append(error);
+  document.body.append(errorContainer);
+
+
+  const hideError = () => {
+    errorContainer.remove();
   };
 
-  document.addEventListener('keydown', onDocumentKeydown);
-  text.addEventListener('click', onPopupCloseClick);
-  document.addEventListener('click', onCloseAlertOutside);
+  function onEscHideError(evt) {
+    if (isEscKey) {
+      evt.preventDefault();
+      hideError ();
+    }
+  }
+
+  document.addEventListener('keydown', onEscHideError, { once: true });
+  document.body.addEventListener('click', onBackdropClick, { once: true });
 };
 
-const showErrorMessage = () => {
-  const errorMessage = errorPopup.cloneNode(true);
-  renderMessage(errorMessage);
+
+//Соощение о успешной отправке фото
+const successTemplate = document
+  .querySelector('#success')
+  .content.querySelector('.success');
+
+const successContainer = document.createElement('div');
+successContainer.classList.add('popup');
+
+const successAlert = () => {
+  const success = successTemplate.cloneNode(true);
+
+  successContainer.append(success);
+  document.body.append(successContainer);
+
+
+  const hideSuccess = () => {
+    successContainer.remove();
+    closePhotoEditor();
+  };
+
+  function onEscHideSuccess(evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      hideSuccess ();
+    }
+  }
+
+  document.addEventListener('keydown', onEscHideSuccess, { once: true });
+  document.body.addEventListener('click', onBackdropClick, { once: true });
 };
 
-const showSuccessMessage = () => {
-  const successMessage = successPopup.cloneNode(true);
-  renderMessage(successMessage);
-};
 
 const onSendSuccess = () => {
-  showSuccessMessage();
+  successAlert();
   closePhotoEditor();
   unblockSubmitButton();
 };
 
 const onSendError = () => {
-  showErrorMessage();
+  errorAlert();
   unblockSubmitButton();
 };
 
