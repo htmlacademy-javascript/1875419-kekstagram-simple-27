@@ -1,10 +1,11 @@
+const DEFAULT_EFFECT = {
+  name: 'none',
+  min: 0,
+  max: 100,
+  step: 1,
+};
+
 const EFFECTS = [
-  {
-    name: 'none',
-    min: 0,
-    max: 100,
-    step: 1,
-  },
   {
     name: 'chrome',
     style: 'grayscale',
@@ -60,7 +61,6 @@ const form = document.querySelector('.img-upload__form');
 const effectLevel = document.querySelector('.effect-level__value');
 const sliderElement = document.querySelector('.effect-level__slider');
 
-const DEFAULT_EFFECT = EFFECTS[0];
 let chosenEffect = DEFAULT_EFFECT;
 
 const isDefault = () => chosenEffect === DEFAULT_EFFECT;
@@ -124,4 +124,4 @@ updateSlider();
 form.addEventListener('change', onFormChange);
 sliderElement.noUiSlider.on('update', onSliderUpdate);
 
-export {resetEffect};
+export {resetEffect, onFormChange};

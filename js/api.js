@@ -43,4 +43,5 @@ const onDataFailed = () => {
 
 getData(onDataLoad, onDataFailed);
 
+
 export {sendData};
