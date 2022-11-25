@@ -4,47 +4,47 @@ import { resetEffect, onFormChange } from './effects.js';
 import { sendData } from './api.js';
 
 
-const imgUploadOverlay = document.querySelector('.img-upload__overlay');
-const form = document.querySelector('.img-upload__form');
-const uploadElement = form.querySelector('#upload-file');
-const closeButton = form.querySelector('#upload-cancel');
-const submitButton = form.querySelector('.img-upload__submit');
+const imgUploadOverlayElement = document.querySelector('.img-upload__overlay');
+const formElement = document.querySelector('.img-upload__form');
+const uploadElement = formElement.querySelector('#upload-file');
+const closeButtonElement = formElement.querySelector('#upload-cancel');
+const submitButtonElement = formElement.querySelector('.img-upload__submit');
 
 
-const pristine = new Pristine(form, {
+const pristine = new Pristine(formElement, {
   classTo: 'img-upload__text',
   errorClass: 'img-upload__text--invalid',
   errorTextParent: 'img-upload__text',
 }, true);
 
 const blockSubmitButton = () => {
-  submitButton.disabled = true;
-  submitButton.textContent = 'Публикую...';
+  submitButtonElement.disabled = true;
+  submitButtonElement.textContent = 'Публикую...';
 };
 
 const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = 'Опубликовать';
+  submitButtonElement.disabled = false;
+  submitButtonElement.textContent = 'Опубликовать';
 };
 //сброс формы
 const resetForm = () => {
-  form.reset();
+  formElement.reset();
   resetScale();
   resetEffect();
 };
 
 // Удаление обработчиков событий
 const removeEventListener = () => {
-  form.removeEventListener('change', onFormChange);
+  formElement.removeEventListener('change', onFormChange);
 };
 
 const showPhotoEditor = () => {
-  imgUploadOverlay.classList.toggle('hidden');
+  imgUploadOverlayElement.classList.toggle('hidden');
   document.body.classList.toggle('modal-open');
 };
 
 const closePhotoEditor = () => {
-  imgUploadOverlay.classList.add('hidden');
+  imgUploadOverlayElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
   resetForm();
   removeEventListener();
@@ -52,8 +52,8 @@ const closePhotoEditor = () => {
 
 
 function onPhotoEditorKeydown (evt) {
-  const errorPopup = document.querySelector('.error');
-  if(errorPopup){
+  const errorPopupElement = document.querySelector('.error');
+  if(errorPopupElement){
     return;
   }
   if (isEscKey(evt)) {
@@ -69,31 +69,31 @@ const onPhotoEditorCloseClick = () => {
 
 const onBackdropClick = ({target})=> {
   const isBtnClick = target.closest('.error__button') || target.closest('.success__button');
-  const popup = document.querySelector('.popup');
-  if (popup && (!target.closest('.error__inner') && !target.closest('.success__inner')
+  const popupElement = document.querySelector('.popup');
+  if (popupElement && (!target.closest('.error__inner') && !target.closest('.success__inner')
   || isBtnClick)) {
 
-    popup.remove();
+    popupElement.remove();
   }
 };
 
 
-const errorTemplate = document
+const errorTemplateElement = document
   .querySelector('#error')
   .content.querySelector('.error');
 
-const errorContainer = document.createElement('div');
-errorContainer.classList.add('popup');
+const errorContainerElement = document.createElement('div');
+errorContainerElement.classList.add('popup');
 
 const errorAlert = () => {
-  const error = errorTemplate.cloneNode(true);
+  const errorElement = errorTemplateElement.cloneNode(true);
 
-  errorContainer.append(error);
-  document.body.append(errorContainer);
+  errorContainerElement.append(errorElement);
+  document.body.append(errorContainerElement);
 
 
   const hideError = () => {
-    errorContainer.remove();
+    errorContainerElement.remove();
   };
 
   function onEscHideError(evt) {
@@ -109,22 +109,22 @@ const errorAlert = () => {
 
 
 //Соощение о успешной отправке фото
-const successTemplate = document
+const successTemplateElement = document
   .querySelector('#success')
   .content.querySelector('.success');
 
-const successContainer = document.createElement('div');
-successContainer.classList.add('popup');
+const successContainerElement = document.createElement('div');
+successContainerElement.classList.add('popup');
 
 const successAlert = () => {
-  const success = successTemplate.cloneNode(true);
+  const successElement = successTemplateElement.cloneNode(true);
 
-  successContainer.append(success);
-  document.body.append(successContainer);
+  successContainerElement.append(successElement);
+  document.body.append(successContainerElement);
 
 
   const hideSuccess = () => {
-    successContainer.remove();
+    successContainerElement.remove();
     closePhotoEditor();
   };
 
@@ -153,7 +153,7 @@ const onSendError = () => {
 
 
 const setUserFormSubmit = () => {
-  form.addEventListener('submit', (evt) => {
+  formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     const isValid = pristine.validate();
@@ -174,7 +174,7 @@ const onUploadButton = () => {
 };
 
 uploadElement.addEventListener('input', onUploadButton);
-closeButton.addEventListener('click', ()=>{
+closeButtonElement.addEventListener('click', ()=>{
   onPhotoEditorCloseClick();
   document.removeEventListener('keydown', onPhotoEditorKeydown);
 });
